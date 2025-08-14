@@ -97,7 +97,10 @@ static int	handle_quotes(const char *input, int pos, char **value, t_token_type 
 		return (-1);
 	strncpy(*value, &input[start], len);
 	(*value)[len] = '\0';
-	*type = (quote_char == '"') ? EXPANDABLE_QUOTED : NON_EXPANDABLE;
+	if (quote_char == '"')
+		*type = EXPANDABLE_QUOTED;
+	else
+		*type = NON_EXPANDABLE;
 	return (pos + 1);
 }
 
@@ -244,9 +247,12 @@ void	print_tokens(t_token *head)
 
 	while (head)
 	{
-		printf("Type: %-17s Value: %s\n", 
-			type_names[head->type], 
-			head->value ? head->value : "(null)");
+		if (head->value)
+			printf("Type: %-17s Value: %s\n", 
+				type_names[head->type], head->value);
+		else
+			printf("Type: %-17s Value: %s\n", 
+				type_names[head->type], "(null)");
 		head = head->next;
 	}
 }

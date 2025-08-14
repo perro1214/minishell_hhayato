@@ -205,8 +205,10 @@ void	print_ast(t_ast *node, int level)
 		printf("  ");
 		i++;
 	}
-	printf("%s: %s\n", type_names[node->type], 
-		node->value ? node->value : "(null)");
+	if (node->value)
+		printf("%s: %s\n", type_names[node->type], node->value);
+	else
+		printf("%s: %s\n", type_names[node->type], "(null)");
 	if (node->left)
 	{
 		i = 0;
