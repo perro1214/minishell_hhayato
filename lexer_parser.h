@@ -6,6 +6,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <stdbool.h>
+# include <sys/types.h>
 
 typedef enum e_token_type {
 	EXPANDABLE,         // 通常の文字列
@@ -40,6 +41,38 @@ typedef struct s_parser
 	t_token				*current;
 }	t_parser;
 
+
+
+
+
+// Command execution structures
+typedef enum e_redirect_type
+{
+	REDIR_INPUT,        // <
+	REDIR_OUTPUT,       // >
+	REDIR_APPEND,       // >>
+	REDIR_HEREDOC       // <<
+}	t_redirect_type;
+
+typedef struct s_cmd_redirection
+{
+	t_redirect_type				type;
+	char						*file_path;
+	int							fd;
+	struct s_cmd_redirection	*next;
+}	t_cmd_redirection;
+
+typedef struct s_command_invocation
+{
+	t_cmd_redirection			*output_redirections;
+	struct s_command_invocation	*piped_command;
+	t_cmd_redirection			*input_redirections;
+	const char					**exec_and_args;
+	pid_t						pid;
+}	t_command_invocation;
+
+
+
 // Lexer functions
 t_token		*tokenize(const char *input);
 t_token		*create_token(t_token_type type, const char *value);
@@ -59,5 +92,13 @@ bool		is_quote(char c);
 bool		is_whitespace(char c);
 bool		is_special_char(char c);
 int			skip_whitespace(const char *str, int pos);
+
+// Command execution functions
+t_command_invocation	*ast_to_command_invocation(t_ast *ast);
+t_cmd_redirection		*create_redirection(t_redirect_type type, const char *file_path);
+void					add_redirection(t_cmd_redirection **head, t_cmd_redirection *new_redir);
+void					free_redirections(t_cmd_redirection *head);
+void					free_command_invocation(t_command_invocation *cmd);
+void					print_command_invocation(t_command_invocation *cmd, int level);
 
 #endif

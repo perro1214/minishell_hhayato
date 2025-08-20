@@ -43,8 +43,23 @@ int	main(void)
 		}
 		else
 		{
+			t_command_invocation *cmd;
+			
 			printf("\n=== AST ===\n");
 			print_ast(ast, 0);
+			
+			cmd = ast_to_command_invocation(ast);
+			if (!cmd)
+			{
+				printf("AST to command_invocation conversion failed!\n");
+			}
+			else
+			{
+				printf("\n=== 🚀 コマンド実行構造体 ===\n");
+				print_command_invocation(cmd, 0);
+				free_command_invocation(cmd);
+			}
+			
 			free_ast(ast);
 		}
 		

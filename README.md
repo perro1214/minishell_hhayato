@@ -1,7 +1,3 @@
-# Minishell Lexer & Parser
-
-42東京のminishell課題用のLexer（字句解析器）とParser（構文解析器）の実装です。
-
 ## 機能
 
 ### Lexer（字句解析）
@@ -23,11 +19,19 @@
 - リダイレクション
 - クォート処理
 
+### Command Execution（コマンド実行）
+ASTをコマンド実行構造体に変換し、実際のコマンド実行に必要な情報を管理します：
+- **Redirection管理**: 入力・出力・追記・ヒアドキュメントのリダイレクション処理
+- **引数配列生成**: コマンドと引数の配列作成
+- **パイプライン対応**: パイプで連結されたコマンドの実行構造体作成
+- **メモリ管理**: 動的に割り当てられたメモリの適切な解放
+
 ## ファイル構成
 
 - `lexer_parser.h`: ヘッダーファイル
 - `lexer.c`: Lexer実装
 - `parser.c`: Parser実装
+- `command_execution.c`: コマンド実行構造体の変換・管理
 - `main.c`: テスト用メイン関数
 - `Makefile`: ビルド設定
 
@@ -67,17 +71,146 @@ echo "hello world" 'test'
 cat << EOF
 ```
 
-## 42ノーム準拠
+## 使用例
 
-- 関数は25行以内
-- ファイルは5つ以上の関数を含まない
-- インデントはタブ使用
-- 適切なヘッダーガード
-- mallocのエラーハンドリング
-- メモリリークなし
+```bash
+ % ./lexer_parser 
+Lexer & Parser Test Program
+Enter a command (or press Ctrl+D to exit):
+echo "hello world" 'test'
 
-## 注意事項
+--- Input: echo "hello world" 'test' ---
 
-- この実装はminishellの基本的なLexer/Parser機能のみを提供
-- 実際のコマンド実行は別途実装が必要
-- エラーハンドリングは最小限（本格実装時は拡張が必要）
+=== TOKENS ===
+Type: EXPANDABLE        Value: echo
+Type: EXPANDABLE_QUOTED Value: hello world
+Type: NON_EXPANDABLE    Value: test
+Type: EOF_TOKEN         Value: (null)
+
+=== AST ===
+EXPANDABLE: echo
+└─ right:
+  EXPANDABLE_QUOTED: hello world
+  └─ right:
+    NON_EXPANDABLE: test
+
+Enter a command (or press Ctrl+D to exit):
+
+Goodbye!
+```
+
+```bash
+ % make test
+Testing lexer and parser...
+Lexer & Parser Test Program
+Enter a command (or press Ctrl+D to exit):
+
+--- Input: echo hello world ---
+
+=== TOKENS ===
+Type: EXPANDABLE        Value: echo
+Type: EXPANDABLE        Value: hello
+Type: EXPANDABLE        Value: world
+Type: EOF_TOKEN         Value: (null)
+
+=== AST ===
+EXPANDABLE: echo
+└─ right:
+  EXPANDABLE: hello
+  └─ right:
+    EXPANDABLE: world
+
+Enter a command (or press Ctrl+D to exit):
+
+Goodbye!
+Lexer & Parser Test Program
+Enter a command (or press Ctrl+D to exit):
+
+--- Input: ls -la | grep test > output.txt ---
+
+=== TOKENS ===
+Type: EXPANDABLE        Value: ls
+Type: EXPANDABLE        Value: -la
+Type: PIPE              Value: |
+Type: EXPANDABLE        Value: grep
+Type: EXPANDABLE        Value: test
+Type: REDIRECT_OUT      Value: >
+Type: EXPANDABLE        Value: output.txt
+Type: EOF_TOKEN         Value: (null)
+
+=== AST ===
+PIPE: |
+├─ left:
+  EXPANDABLE: ls
+  └─ right:
+    EXPANDABLE: -la
+└─ right:
+  EXPANDABLE: grep
+  └─ right:
+    EXPANDABLE: test
+    └─ right:
+      REDIRECT_OUT: >
+      └─ right:
+        EXPANDABLE: output.txt
+
+Enter a command (or press Ctrl+D to exit):
+
+Goodbye!
+Lexer & Parser Test Program
+Enter a command (or press Ctrl+D to exit):
+
+--- Input: cat < input.txt | wc -l >> count.txt ---
+
+=== TOKENS ===
+Type: EXPANDABLE        Value: cat
+Type: REDIRECT_IN       Value: <
+Type: EXPANDABLE        Value: input.txt
+Type: PIPE              Value: |
+Type: EXPANDABLE        Value: wc
+Type: EXPANDABLE        Value: -l
+Type: REDIRECT_APPEND   Value: >>
+Type: EXPANDABLE        Value: count.txt
+Type: EOF_TOKEN         Value: (null)
+
+=== AST ===
+PIPE: |
+├─ left:
+  EXPANDABLE: cat
+  └─ right:
+    REDIRECT_IN: <
+    └─ right:
+      EXPANDABLE: input.txt
+└─ right:
+  EXPANDABLE: wc
+  └─ right:
+    EXPANDABLE: -l
+    └─ right:
+      REDIRECT_APPEND: >>
+      └─ right:
+        EXPANDABLE: count.txt
+
+Enter a command (or press Ctrl+D to exit):
+
+Goodbye!
+Lexer & Parser Test Program
+Enter a command (or press Ctrl+D to exit):
+
+--- Input: cat << EOF ---
+
+=== TOKENS ===
+Type: EXPANDABLE        Value: cat
+Type: REDIRECT_HEREDOC  Value: <<
+Type: EXPANDABLE        Value: EOF
+Type: EOF_TOKEN         Value: (null)
+
+=== AST ===
+EXPANDABLE: cat
+└─ right:
+  REDIRECT_HEREDOC: <<
+  └─ right:
+    EXPANDABLE: EOF
+
+Enter a command (or press Ctrl+D to exit):
+
+Goodbye!
+```
