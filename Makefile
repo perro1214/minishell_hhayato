@@ -4,7 +4,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
 SRCDIR = .
-SOURCES = lexer.c parser.c command_execution.c main.c
+SOURCES = lexer.c parser.c command_execution.c env_utils.c expander.c main.c
 OBJECTS = $(SOURCES:.c=.o)
 
 all: $(NAME)

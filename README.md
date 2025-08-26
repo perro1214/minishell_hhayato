@@ -1,3 +1,27 @@
+# hhayato
+
+## 変更点
+
+### 環境変数展開機能の実装
+
+- **新規ファイル追加**:
+  - `env_utils.c`: 環境変数リストの管理（作成、検索、解放）
+  - `expander.c`: 変数展開（`$変数名` → 値に変換）
+
+- **既存ファイル更新**:
+  - `lexer_parser.h`: 環境変数構造体（`t_env`, `t_data`）とプロトタイプを追加
+  - `command_execution.c`: 引数とリダイレクションファイル名で変数展開を適用
+  - `main.c`: 環境変数初期化処理とテスト表示の変更
+  - `Makefile`: 新しいソースファイル（env_utils.c, expander.c）を追加
+
+- **動作確認済み**:
+  - `echo $TEST` → `echo test` ✅
+  - `echo "$USER lives in $HOME"` → ダブルクォート内変数展開 ✅ 
+  - `echo '$TEST'` → シングルクォート内は非展開 ✅
+  - `echo hello > $FILENAME` → リダイレクション先の変数展開 ✅
+
+
+
 ## 機能
 
 ### Lexer（字句解析）

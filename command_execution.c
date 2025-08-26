@@ -112,11 +112,12 @@ static int	count_args(t_ast *node)
 	return (count);
 }
 
-static const char	**create_args_array(t_ast *node)
+static const char	**create_args_array(t_ast *node, t_env *env_list)
 {
 	const char	**args;
 	int			count;
 	int			i;
+	char		*expanded_value;
 
 	count = count_args(node);
 	args = malloc(sizeof(char *) * (count + 1));
@@ -128,15 +129,15 @@ static const char	**create_args_array(t_ast *node)
 		if (node->type == EXPANDABLE || node->type == EXPANDABLE_QUOTED || 
 			node->type == NON_EXPANDABLE)
 		{
-			args[i] = malloc(strlen(node->value) + 1);
-			if (!args[i])
+			expanded_value = expand_token_value(node->value, node->type, env_list);
+			if (!expanded_value)
 			{
 				while (--i >= 0)
 					free((char *)args[i]);
 				free(args);
 				return (NULL);
 			}
-			strcpy((char *)args[i], node->value);
+			args[i] = expanded_value;
 			i++;
 		}
 		else if (is_redirect_token(node->type))
@@ -150,10 +151,11 @@ static const char	**create_args_array(t_ast *node)
 	return (args);
 }
 
-static void	process_redirections(t_ast *node, t_command_invocation *cmd)
+static void	process_redirections(t_ast *node, t_command_invocation *cmd, t_env *env_list)
 {
 	t_cmd_redirection	*redir;
 	t_redirect_type		redir_type;
+	char				*expanded_path;
 
 	while (node)
 	{
@@ -162,13 +164,18 @@ static void	process_redirections(t_ast *node, t_command_invocation *cmd)
 			redir_type = token_to_redirect_type(node->type);
 			if (node->right && node->right->value)
 			{
-				redir = create_redirection(redir_type, node->right->value);
-				if (redir)
+				expanded_path = expand_token_value(node->right->value, node->right->type, env_list);
+				if (expanded_path)
 				{
-					if (redir_type == REDIR_INPUT || redir_type == REDIR_HEREDOC)
-						add_redirection(&cmd->input_redirections, redir);
-					else
-						add_redirection(&cmd->output_redirections, redir);
+					redir = create_redirection(redir_type, expanded_path);
+					free(expanded_path);
+					if (redir)
+					{
+						if (redir_type == REDIR_INPUT || redir_type == REDIR_HEREDOC)
+							add_redirection(&cmd->input_redirections, redir);
+						else
+							add_redirection(&cmd->output_redirections, redir);
+					}
 				}
 			}
 			if (node->right)
@@ -178,7 +185,7 @@ static void	process_redirections(t_ast *node, t_command_invocation *cmd)
 	}
 }
 
-static t_command_invocation	*convert_simple_command(t_ast *ast)
+static t_command_invocation	*convert_simple_command(t_ast *ast, t_env *env_list)
 {
 	t_command_invocation	*cmd;
 
@@ -190,19 +197,19 @@ static t_command_invocation	*convert_simple_command(t_ast *ast)
 	cmd->piped_command = NULL;
 	cmd->pid = -1;
 	
-	cmd->exec_and_args = create_args_array(ast);
+	cmd->exec_and_args = create_args_array(ast, env_list);
 	if (!cmd->exec_and_args)
 	{
 		free(cmd);
 		return (NULL);
 	}
 	
-	process_redirections(ast, cmd);
+	process_redirections(ast, cmd, env_list);
 	
 	return (cmd);
 }
 
-t_command_invocation	*ast_to_command_invocation(t_ast *ast)
+t_command_invocation	*ast_to_command_invocation(t_ast *ast, t_env *env_list)
 {
 	t_command_invocation	*cmd;
 	t_command_invocation	*piped_cmd;
@@ -212,10 +219,10 @@ t_command_invocation	*ast_to_command_invocation(t_ast *ast)
 	
 	if (ast->type == PIPE)
 	{
-		cmd = ast_to_command_invocation(ast->left);
+		cmd = ast_to_command_invocation(ast->left, env_list);
 		if (!cmd)
 			return (NULL);
-		piped_cmd = ast_to_command_invocation(ast->right);
+		piped_cmd = ast_to_command_invocation(ast->right, env_list);
 		if (!piped_cmd)
 		{
 			free_command_invocation(cmd);
@@ -225,7 +232,7 @@ t_command_invocation	*ast_to_command_invocation(t_ast *ast)
 		return (cmd);
 	}
 
-	return (convert_simple_command(ast));
+	return (convert_simple_command(ast, env_list));
 }
 
 

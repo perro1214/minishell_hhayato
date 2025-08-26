@@ -7,6 +7,27 @@
 # include <string.h>
 # include <stdbool.h>
 # include <sys/types.h>
+# include <ctype.h>
+
+// 環境変数構造体
+typedef struct s_env
+{
+	struct s_env	*prev;
+	char			*name;
+	char			*value;
+	struct s_env	*next;
+}	t_env;
+
+// データ構造体
+typedef struct s_data
+{
+	t_env					*env_head;
+	t_env					*env_tail;
+	struct s_command_invocation	*cmd;
+	struct s_ast			*ast;
+	struct s_token			*tokens;
+	char					*input;
+}	t_data;
 
 typedef enum e_token_type {
 	EXPANDABLE,         // 通常の文字列
@@ -94,11 +115,22 @@ bool		is_special_char(char c);
 int			skip_whitespace(const char *str, int pos);
 
 // Command execution functions
-t_command_invocation	*ast_to_command_invocation(t_ast *ast);
+t_command_invocation	*ast_to_command_invocation(t_ast *ast, t_env *env_list);
 t_cmd_redirection		*create_redirection(t_redirect_type type, const char *file_path);
 void					add_redirection(t_cmd_redirection **head, t_cmd_redirection *new_redir);
 void					free_redirections(t_cmd_redirection *head);
 void					free_command_invocation(t_command_invocation *cmd);
 void					print_command_invocation(t_command_invocation *cmd, int level);
+
+// 環境変数操作関数
+void					free_env_list(t_env *head);
+t_env					*make_env_node(char *name, char *value);
+void					append_env_node(t_env **head, t_env **tail, t_env *node);
+t_env					*find_env_node(t_env *head, const char *name);
+int						init_env_list(t_data *data, char *envp[]);
+
+// 変数展開関数
+char					*expand_variables(const char *str, t_env *env_list);
+char					*expand_token_value(const char *value, t_token_type type, t_env *env_list);
 
 #endif
