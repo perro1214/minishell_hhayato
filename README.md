@@ -2,24 +2,18 @@
 
 ## 変更点
 
-### 環境変数展開機能の実装
+### パイプライン実行機能の実装
 
-- **新規ファイル追加**:
-  - `env_utils.c`: 環境変数リストの管理（作成、検索、解放）
-  - `expander.c`: 変数展開（`$変数名` → 値に変換）
+- **実行エンジン追加**:
+  - `execute_pipeline()`: 連続パイプ（`ls -la | wc -l | wc -l`）に対応した再帰実行
 
-- **既存ファイル更新**:
-  - `lexer_parser.h`: 環境変数構造体（`t_env`, `t_data`）とプロトタイプを追加
-  - `command_execution.c`: 引数とリダイレクションファイル名で変数展開を適用
-  - `main.c`: 環境変数初期化処理とテスト表示の変更
-  - `Makefile`: 新しいソースファイル（env_utils.c, expander.c）を追加
-
-- **動作確認済み**:
-  - `echo $TEST` → `echo test` ✅
-  - `echo "$USER lives in $HOME"` → ダブルクォート内変数展開 ✅ 
-  - `echo '$TEST'` → シングルクォート内は非展開 ✅
-  - `echo hello > $FILENAME` → リダイレクション先の変数展開 ✅
-
+- **修正箇所**:
+  - command_execution.c : 
+    - 5行目から10行目(static void	create_path関数の追加)
+    - 340行目以降(execute_pipeline関数とexecute_simple_command関数を追加)
+    - 214行目から225行目まで(static t_command_invocation	*find_last_command(t_command_invocation *cmd)を追加)
+    - 227行目から253行目まで(ast_to_command_invocationを修正)
+  - lexer_parser.h: 新しい実行関数の宣言を追加
 
 
 ## 機能
@@ -82,11 +76,18 @@ echo hello world
 # パイプライン
 ls -la | grep test
 
+# 連続パイプ
+ls -la | wc -l | wc -l
+
 # リダイレクション
 cat < input.txt > output.txt
 
 # 複合
 ls -la | grep test > output.txt
+
+# 環境変数展開
+echo $HOME
+echo "$USER lives in $HOME"
 
 # クォート
 echo "hello world" 'test'

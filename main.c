@@ -67,6 +67,11 @@ int	main(int argc, char **argv, char **envp)
 			{
 				printf("\n=== 🚀 コマンド実行構造体 (変数展開済み) ===\n");
 				print_command_invocation(cmd, 0);
+				
+				printf("\n=== 実行結果 ===\n");
+				fflush(stdout);
+				execute_pipeline(cmd, data.env_head);
+				
 				free_command_invocation(cmd);
 			}
 			

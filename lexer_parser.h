@@ -8,6 +8,7 @@
 # include <stdbool.h>
 # include <sys/types.h>
 # include <ctype.h>
+# include "42_libft/libft.h"
 
 // 環境変数構造体
 typedef struct s_env
@@ -121,6 +122,8 @@ void					add_redirection(t_cmd_redirection **head, t_cmd_redirection *new_redir)
 void					free_redirections(t_cmd_redirection *head);
 void					free_command_invocation(t_command_invocation *cmd);
 void					print_command_invocation(t_command_invocation *cmd, int level);
+int						execute_pipeline(t_command_invocation *cmd, t_env *env_list);
+int						execute_simple_command(t_command_invocation *cmd, t_env *env_list);
 
 // 環境変数操作関数
 void					free_env_list(t_env *head);

@@ -44,7 +44,7 @@ t_env	*find_env_node(t_env *head, const char *name)
 {
 	while (head)
 	{
-		if (strcmp(head->name, name) == 0)
+		if (ft_strncmp(head->name, name, ft_strlen(name) + 1) == 0)
 			return (head);
 		head = head->next;
 	}
@@ -69,25 +69,6 @@ static char	*ft_strndup(const char *s, size_t n)
 	return (result);
 }
 
-static char	*ft_strdup(const char *s)
-{
-	char	*result;
-	size_t	len;
-	size_t	i;
-
-	len = strlen(s);
-	result = malloc(len + 1);
-	if (!result)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		result[i] = s[i];
-		i++;
-	}
-	result[i] = '\0';
-	return (result);
-}
 
 static t_env	*split_env(char *envp)
 {
@@ -96,7 +77,7 @@ static t_env	*split_env(char *envp)
 	char	*value;
 	t_env	*node;
 
-	eq = strchr(envp, '=');
+	eq = ft_strchr(envp, '=');
 	if (!eq)
 		return (NULL);
 	name = ft_strndup(envp, eq - envp);

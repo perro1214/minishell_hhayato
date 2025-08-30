@@ -7,19 +7,27 @@ SRCDIR = .
 SOURCES = lexer.c parser.c command_execution.c env_utils.c expander.c main.c
 OBJECTS = $(SOURCES:.c=.o)
 
-all: $(NAME)
+LIBFT_DIR = 42_libft
+LIBFT = $(LIBFT_DIR)/libft.a
 
-$(NAME): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS)
+all: $(LIBFT) $(NAME)
+
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
+
+$(NAME): $(OBJECTS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) $(LIBFT)
 
 %.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJECTS)
+	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
 	rm -f $(NAME)
+	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
