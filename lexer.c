@@ -10,13 +10,12 @@ t_token	*create_token(t_token_type type, const char *value)
 	token->type = type;
 	if (value)
 	{
-		token->value = malloc(strlen(value) + 1);
+		token->value = ft_strdup(value);
 		if (!token->value)
 		{
 			free(token);
 			return (NULL);
 		}
-		strcpy(token->value, value);
 	}
 	else
 		token->value = NULL;
@@ -95,8 +94,7 @@ static int	handle_quotes(const char *input, int pos, char **value, t_token_type 
 	*value = malloc(len + 1);
 	if (!*value)
 		return (-1);
-	strncpy(*value, &input[start], len);
-	(*value)[len] = '\0';
+	ft_strlcpy(*value, &input[start], len + 1);
 	if (quote_char == '"')
 		*type = EXPANDABLE_QUOTED;
 	else
@@ -111,19 +109,17 @@ static int	handle_redirect(const char *input, int pos, char **value, t_token_typ
 		if (input[pos + 1] == '<')
 		{
 			*type = REDIRECT_HEREDOC;
-			*value = malloc(3);
+			*value = ft_strdup("<<");
 			if (!*value)
 				return (-1);
-			strcpy(*value, "<<");
 			return (pos + 2);
 		}
 		else
 		{
 			*type = REDIRECT_IN;
-			*value = malloc(2);
+			*value = ft_strdup("<");
 			if (!*value)
 				return (-1);
-			strcpy(*value, "<");
 			return (pos + 1);
 		}
 	}
@@ -132,19 +128,17 @@ static int	handle_redirect(const char *input, int pos, char **value, t_token_typ
 		if (input[pos + 1] == '>')
 		{
 			*type = REDIRECT_APPEND;
-			*value = malloc(3);
+			*value = ft_strdup(">>");
 			if (!*value)
 				return (-1);
-			strcpy(*value, ">>");
 			return (pos + 2);
 		}
 		else
 		{
 			*type = REDIRECT_OUT;
-			*value = malloc(2);
+			*value = ft_strdup(">");
 			if (!*value)
 				return (-1);
-			strcpy(*value, ">");
 			return (pos + 1);
 		}
 	}
@@ -155,31 +149,79 @@ static int	handle_pipe(const char *input, int pos, char **value, t_token_type *t
 {
 	(void)input;
 	*type = PIPE;
-	*value = malloc(2);
+	*value = ft_strdup("|");
 	if (!*value)
 		return (-1);
-	strcpy(*value, "|");
 	return (pos + 1);
 }
 
-static int	handle_word(const char *input, int pos, char **value, t_token_type *type)
+static int	handle_concatenated_word(const char *input, int pos, char **value, t_token_type *type)
 {
-	int	start;
-	int	len;
+	char	*result;
+	char	*temp;
+	char	*new_result;
+	int		start_pos;
+	t_token_type temp_type;
+	int		new_pos;
+	bool	has_expandable_part;
 
-	start = pos;
-	while (input[pos] && !is_whitespace(input[pos]) 
-		&& !is_special_char(input[pos]) && !is_quote(input[pos]))
-		pos++;
-	len = pos - start;
-	*value = malloc(len + 1);
-	if (!*value)
+	result = ft_strdup("");
+	if (!result)
 		return (-1);
-	strncpy(*value, &input[start], len);
-	(*value)[len] = '\0';
-	*type = EXPANDABLE;
+	has_expandable_part = false;
+
+	while (input[pos] && !is_whitespace(input[pos]) && !is_special_char(input[pos]))
+	{
+		temp = NULL;
+		if (is_quote(input[pos]))
+		{
+			new_pos = handle_quotes(input, pos, &temp, &temp_type);
+			if (new_pos == -1 || !temp)
+			{
+				free(result);
+				return (-1);
+			}
+			if (temp_type == EXPANDABLE_QUOTED)
+				has_expandable_part = true;
+		}
+		else
+		{
+			start_pos = pos;
+			while (input[pos] && !is_whitespace(input[pos]) 
+				&& !is_special_char(input[pos]) && !is_quote(input[pos]))
+				pos++;
+			temp = ft_substr(input, start_pos, pos - start_pos);
+			if (!temp)
+			{
+				free(result);
+				return (-1);
+			}
+			new_pos = pos;
+			has_expandable_part = true;
+		}
+
+		new_result = ft_strjoin(result, temp);
+		if (!new_result)
+		{
+			free(result);
+			free(temp);
+			return (-1);
+		}
+		free(result);
+		free(temp);
+		result = new_result;
+		pos = new_pos;
+	}
+
+	if (has_expandable_part)
+		*type = EXPANDABLE_QUOTED;
+	else
+		*type = NON_EXPANDABLE;
+
+	*value = result;
 	return (pos);
 }
+
 
 t_token	*tokenize(const char *input)
 {
@@ -198,14 +240,12 @@ t_token	*tokenize(const char *input)
 		if (!input[pos])
 			break;
 		value = NULL;
-		if (is_quote(input[pos]))
-			new_pos = handle_quotes(input, pos, &value, &type);
-		else if (input[pos] == '<' || input[pos] == '>')
+		if (input[pos] == '<' || input[pos] == '>')
 			new_pos = handle_redirect(input, pos, &value, &type);
 		else if (input[pos] == '|')
 			new_pos = handle_pipe(input, pos, &value, &type);
 		else
-			new_pos = handle_word(input, pos, &value, &type);
+			new_pos = handle_concatenated_word(input, pos, &value, &type);
 		if (new_pos == -1 || !value)
 		{
 			free_tokens(head);
