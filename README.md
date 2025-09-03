@@ -13,6 +13,7 @@
   - **lexer.c :**
     - 追加した関数  
       has_unclosed_quote(const char *str)
+      
       handle_multiline_input(const char *initial_input)
 
 ## 機能
