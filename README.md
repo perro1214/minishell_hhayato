@@ -7,9 +7,13 @@
 - **修正箇所**:
   - **command_execution.c :** 
     - 追加した関数
+      
       process_heredoc(const char *delimiter)
+      
     - 修正した関数
+      
       apply_redirections()
+      
   - **lexer.c :**
     - 追加した関数  
       has_unclosed_quote(const char *str)
