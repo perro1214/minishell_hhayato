@@ -1,11 +1,11 @@
 #include "lexer_parser.h"
+#include <readline/readline.h>
 
 int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
 	t_token	*tokens;
 	t_ast	*ast;
-	size_t	len;
 	t_data	data;
 
 	(void)argc;
@@ -18,24 +18,28 @@ int	main(int argc, char **argv, char **envp)
 	}
 	
 	printf("Lexer & Parser Test Program with Variable Expansion\n");
-	printf("Enter a command (or press Ctrl+D to exit):\n");
 	
-	input = NULL;
-	len = 0;
-	while (getline(&input, &len, stdin) != -1)
+	while ((input = readline("Enter a command (or press Ctrl+D to exit): ")) != NULL)
 	{
-		if (input[strlen(input) - 1] == '\n')
-			input[strlen(input) - 1] = '\0';
 		
 		if (strlen(input) == 0)
 		{
+			free(input);
+			continue;
+		}
+		
+		// マルチライン文字列対応：未閉じのクォートをチェック
+		char *complete_input = handle_multiline_input(input);
+		if (!complete_input)
+		{
+			printf("Memory allocation failed!\n");
 			printf("Enter a command (or press Ctrl+D to exit):\n");
 			continue;
 		}
 		
-		printf("\n--- Input: %s ---\n", input);
+		printf("\n--- Input: %s ---\n", complete_input);
 		
-		tokens = tokenize(input);
+		tokens = tokenize(complete_input);
 		if (!tokens)
 		{
 			printf("Tokenization failed!\n");
@@ -79,10 +83,9 @@ int	main(int argc, char **argv, char **envp)
 		}
 		
 		free_tokens(tokens);
-		printf("\nEnter a command (or press Ctrl+D to exit):\n");
+		free(complete_input);
+		free(input);
 	}
-	
-	free(input);
 	free_env_list(data.env_head);
 	printf("\nGoodbye!\n");
 	return (0);

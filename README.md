@@ -4,17 +4,16 @@
 
 ### パイプライン実行機能の実装
 
-- **実行エンジン追加**:
-  - `execute_pipeline()`: 連続パイプ（`ls -la | wc -l | wc -l`）に対応した再帰実行
-
 - **修正箇所**:
-  - command_execution.c : 
-    - 5行目から10行目(static void	create_path関数の追加)
-    - 340行目以降(execute_pipeline関数とexecute_simple_command関数を追加)
-    - 214行目から225行目まで(static t_command_invocation	*find_last_command(t_command_invocation *cmd)を追加)
-    - 227行目から253行目まで(ast_to_command_invocationを修正)
-  - lexer_parser.h: 新しい実行関数の宣言を追加
-
+  - **command_execution.c :** 
+    - 追加した関数
+      process_heredoc(const char *delimiter)
+    - 修正した関数
+      apply_redirections()
+  - **lexer.c :**
+    - 追加した関数  
+      has_unclosed_quote(const char *str)
+      handle_multiline_input(const char *initial_input)
 
 ## 機能
 

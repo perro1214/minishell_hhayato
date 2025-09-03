@@ -16,7 +16,7 @@ $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
 
 $(NAME): $(OBJECTS) $(LIBFT)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) $(LIBFT) -lreadline
 
 %.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@

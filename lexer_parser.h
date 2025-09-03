@@ -136,4 +136,7 @@ int						init_env_list(t_data *data, char *envp[]);
 char					*expand_variables(const char *str, t_env *env_list);
 char					*expand_token_value(const char *value, t_token_type type, t_env *env_list);
 
+// マルチライン入力処理関数
+char					*handle_multiline_input(const char *initial_input);
+
 #endif

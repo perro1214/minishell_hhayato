@@ -1,6 +1,7 @@
 #include "lexer_parser.h"
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <readline/readline.h>
 
 static void	create_path(char *dest, const char *dir, const char *cmd)
 {
@@ -370,7 +371,61 @@ void	print_command_invocation(t_command_invocation *cmd, int level)
 	}
 }
 
-// 修正点　連続パイプの対応
+
+
+// heredocの処理 修正
+static int	process_heredoc(const char *delimiter)
+{
+	int		pipefd[2];
+	pid_t	pid;
+	char	*line;
+	int		delimiter_len;
+
+	if (pipe(pipefd) == -1)
+		return (-1);
+	
+	pid = fork();
+	if (pid == 0)
+	{
+		close(pipefd[0]);
+		delimiter_len = ft_strlen(delimiter);
+		
+		while (1)
+		{
+			line = readline("> ");
+			
+			if (!line || (ft_strncmp(line, delimiter, delimiter_len) == 0 && 
+				line[delimiter_len] == '\0'))
+			{
+				free(line);
+				break;
+			}
+			
+			write(pipefd[1], line, ft_strlen(line));
+			write(pipefd[1], "\n", 1);
+			free(line);
+		}
+		close(pipefd[1]);
+		exit(0);
+	}
+	else if (pid > 0)
+	{
+		close(pipefd[1]);
+		if (dup2(pipefd[0], STDIN_FILENO) == -1)
+		{
+			close(pipefd[0]);
+			waitpid(pid, NULL, 0);
+			return (-1);
+		}
+		close(pipefd[0]);
+		waitpid(pid, NULL, 0);
+		return (0);
+	}
+	
+	close(pipefd[0]);
+	close(pipefd[1]);
+	return (-1);
+}
 
 static int	apply_redirections(t_cmd_redirection *redirections)
 {
@@ -415,6 +470,11 @@ static int	apply_redirections(t_cmd_redirection *redirections)
 				return (-1);
 			}
 			close(fd);
+		}
+		else if (current->type == REDIR_HEREDOC)
+		{
+			if (process_heredoc(current->file_path) == -1)
+				return (-1);
 		}
 		current = current->next;
 	}

@@ -1,4 +1,5 @@
 #include "lexer_parser.h"
+#include <readline/readline.h>
 
 t_token	*create_token(t_token_type type, const char *value)
 {
@@ -295,4 +296,73 @@ void	print_tokens(t_token *head)
 				type_names[head->type], "(null)");
 		head = head->next;
 	}
+}
+
+// 未閉じのクォートをチェックする関数 追加
+static bool	has_unclosed_quote(const char *str)
+{
+	bool	in_single_quote;
+	bool	in_double_quote;
+	int		i;
+
+	in_single_quote = false;
+	in_double_quote = false;
+	i = 0;
+	
+	while (str[i])
+	{
+		if (str[i] == '\'' && !in_double_quote)
+			in_single_quote = !in_single_quote;
+		else if (str[i] == '"' && !in_single_quote)
+			in_double_quote = !in_double_quote;
+		i++;
+	}
+	
+	return (in_single_quote || in_double_quote);
+}
+
+// マルチライン入力処理関数　追加
+char	*handle_multiline_input(const char *initial_input)
+{
+	char	*result;
+	char	*line;
+	char	*temp;
+
+	if (!initial_input)
+		return (NULL);
+		
+	result = ft_strdup(initial_input);
+	if (!result)
+		return (NULL);
+	while (has_unclosed_quote(result))
+	{
+		line = readline("dquote> ");
+		if (!line)
+		{
+			free(result);
+			return (NULL);
+		}
+		if (strlen(line) == 0)
+		{
+			free(line);
+			continue;
+		}
+		temp = ft_strjoin(result, "\n");
+		if (!temp)
+		{
+			free(result);
+			free(line);
+			return (NULL);
+		}
+		free(result);
+		
+		result = ft_strjoin(temp, line);
+		free(temp);
+		free(line);
+		
+		if (!result)
+			return (NULL);
+	}
+	
+	return (result);
 }
