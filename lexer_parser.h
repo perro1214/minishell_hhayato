@@ -47,9 +47,21 @@ typedef struct s_parser
 	t_token				*current;
 }	t_parser;
 
+typedef struct s_cmd_lists
+{
+	t_ast				**arg_head;
+	t_ast				**redirect_head;
+	t_ast				**last_arg;
+	t_ast				**last_redirect;
+}	t_cmd_lists;
 
-
-
+typedef struct s_cmd_vars
+{
+	t_ast				*arg_head;
+	t_ast				*redirect_head;
+	t_ast				*last_arg;
+	t_ast				*last_redirect;
+}	t_cmd_vars;
 
 // Command execution structures
 typedef enum e_redirect_type
@@ -84,6 +96,14 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+typedef struct s_expand_ctx
+{
+	const char		*str;
+	char			*result;
+	int				i;
+	int				j;
+	t_env			*env_list;
+}	t_expand_ctx;
 
 typedef struct s_data
 {
@@ -97,7 +117,7 @@ typedef struct s_data
 
 // Lexer functions
 t_token		*tokenize(const char *input);
-t_token		*create_token(t_token_type type	,const char	*value);
+t_token		*create_token(t_token_type type, const char *value);
 void		add_token(t_token **head, t_token *new_token);
 void		free_tokens(t_token *head);
 void		print_tokens(t_token *head);
