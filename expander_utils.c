@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expander_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:05:47 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:10 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
-int	get_var_name_length(const char *str)
+int	get_var_name_length(char *str)
 {
 	int	len;
 
@@ -10,7 +22,7 @@ int	get_var_name_length(const char *str)
 	return (len);
 }
 
-static char	*allocate_and_copy_name(const char *var_name, int name_len)
+static char	*allocate_and_copy_name(char *var_name, int name_len)
 {
 	char	*name;
 
@@ -22,7 +34,7 @@ static char	*allocate_and_copy_name(const char *var_name, int name_len)
 	return (name);
 }
 
-char	*get_env_value(const char *var_name, int name_len, t_env *env_list)
+char	*get_env_value(char *var_name, int name_len, t_env *env_list)
 {
 	char	*name;
 	t_env	*env_node;
@@ -41,4 +53,3 @@ char	*get_env_value(const char *var_name, int name_len, t_env *env_list)
 	ft_strcpy(result, env_node->value);
 	return (result);
 }
-

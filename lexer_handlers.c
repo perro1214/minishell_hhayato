@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_handlers.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:05:54 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:11 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
-static int	extract_quoted_value\
-(const char *input, int start, int end, char **value)
+static int	extract_quoted_value(char *input, int start, int end, char **value)
 {
 	int	len;
 
@@ -13,7 +24,7 @@ static int	extract_quoted_value\
 	return (0);
 }
 
-int	handle_quotes(const char *input, int pos, char **value, t_token_type *type)
+int	handle_quotes(char *input, int pos, char **value, t_token_type *type)
 {
 	char	quote_char;
 	int		start;
@@ -36,7 +47,7 @@ int	handle_quotes(const char *input, int pos, char **value, t_token_type *type)
 	return (pos + 1);
 }
 
-static int	handle_input_redirect(const char *input, int pos, char **value)
+static int	handle_input_redirect(char *input, int pos, char **value)
 {
 	if (input[pos + 1] == '<')
 	{
@@ -54,7 +65,7 @@ static int	handle_input_redirect(const char *input, int pos, char **value)
 	}
 }
 
-static int	handle_output_redirect(const char *input, int pos, char **value)
+static int	handle_output_redirect(char *input, int pos, char **value)
 {
 	if (input[pos + 1] == '>')
 	{
@@ -72,8 +83,7 @@ static int	handle_output_redirect(const char *input, int pos, char **value)
 	}
 }
 
-int	handle_redirect\
-(const char *input, int pos, char **value, t_token_type *type)
+int	handle_redirect(char *input, int pos, char **value, t_token_type *type)
 {
 	int	result;
 
@@ -97,4 +107,3 @@ int	handle_redirect\
 	}
 	return (-1);
 }
-

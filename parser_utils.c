@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:06:51 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:25 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
 t_token	*advance_token(t_parser *parser)
@@ -61,4 +73,3 @@ t_ast	*parse_redirection(t_parser *parser)
 	advance_token(parser);
 	return (redirect_node);
 }
-

@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   command_execution.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:05:00 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:03 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
-static t_command_invocation	*convert_simple_command(t_ast *ast, \
-t_env *env_list)
+static t_command_invocation	*convert_simple_command(t_ast *ast, t_env *env_list)
 {
 	t_command_invocation	*cmd;
 

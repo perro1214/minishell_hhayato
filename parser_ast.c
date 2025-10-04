@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_ast.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:06:26 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:19 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
-static char	*allocate_value(const char *value, t_ast *node)
+static char	*allocate_value(char *value, t_ast *node)
 {
 	char	*new_value;
 
@@ -14,7 +26,7 @@ static char	*allocate_value(const char *value, t_ast *node)
 	return (new_value);
 }
 
-t_ast	*create_ast_node(t_token_type type, const char *value)
+t_ast	*create_ast_node(t_token_type type, char *value)
 {
 	t_ast	*node;
 
@@ -48,4 +60,3 @@ bool	is_redirect_token(t_token_type type)
 	return (type == REDIRECT_IN || type == REDIRECT_OUT
 		|| type == REDIRECT_APPEND || type == REDIRECT_HEREDOC);
 }
-

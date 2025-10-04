@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_multiline.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:05:59 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:12 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 #include <readline/readline.h>
 
-static bool	has_unclosed_quote(const char *str)
+static bool	has_unclosed_quote(char *str)
 {
 	bool	in_single_quote;
 	bool	in_double_quote;
@@ -58,7 +70,7 @@ static char	*read_next_line(char *result)
 	return (join_multiline(result, line));
 }
 
-char	*handle_multiline_input(const char *initial_input)
+char	*handle_multiline_input(char *initial_input)
 {
 	char	*result;
 
@@ -75,4 +87,3 @@ char	*handle_multiline_input(const char *initial_input)
 	}
 	return (result);
 }
-

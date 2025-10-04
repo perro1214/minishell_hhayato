@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   command_free.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:05:04 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:04 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
 void	free_redirections(t_cmd_redirection *head)
@@ -15,7 +27,7 @@ void	free_redirections(t_cmd_redirection *head)
 	}
 }
 
-static void	free_exec_and_args(const char **exec_and_args)
+static void	free_exec_and_args(char **exec_and_args)
 {
 	int	i;
 
@@ -39,4 +51,3 @@ void	free_command_invocation(t_command_invocation *cmd)
 	free_command_invocation(cmd->piped_command);
 	free(cmd);
 }
-

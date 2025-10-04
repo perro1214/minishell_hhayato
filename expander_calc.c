@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expander_calc.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:05:32 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:18:57 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
 static int	calc_status_len(void)
@@ -13,7 +25,7 @@ static int	calc_status_len(void)
 	return (len);
 }
 
-static int	calc_env_var_len(const char *str, int *i, t_env *env_list)
+static int	calc_env_var_len(char *str, int *i, t_env *env_list)
 {
 	int		var_name_len;
 	char	*env_value;
@@ -31,7 +43,7 @@ static int	calc_env_var_len(const char *str, int *i, t_env *env_list)
 	return (len);
 }
 
-int	calculate_expanded_length(const char *str, t_env *env_list)
+int	calculate_expanded_length(char *str, t_env *env_list)
 {
 	int	total_len;
 	int	i;
@@ -45,8 +57,8 @@ int	calculate_expanded_length(const char *str, t_env *env_list)
 			total_len += calc_status_len();
 			i += 2;
 		}
-		else if (str[i] == '$' && str[i + 1]
-			&& (ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
+		else if (str[i] == '$' && str[i + 1] && \
+		(ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
 			total_len += calc_env_var_len(str, &i, env_list);
 		else
 		{
@@ -56,4 +68,3 @@ int	calculate_expanded_length(const char *str, t_env *env_list)
 	}
 	return (total_len);
 }
-

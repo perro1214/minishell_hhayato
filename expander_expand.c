@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expander_expand.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:05:42 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:09 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
 static void	expand_status_var(t_expand_ctx *ctx)
@@ -33,7 +45,7 @@ static void	expand_env_var(t_expand_ctx *ctx)
 	ctx->i += var_name_len + 1;
 }
 
-static void	expand_loop(const char *str, char *result, t_env *env_list)
+static void	expand_loop(char *str, char *result, t_env *env_list)
 {
 	t_expand_ctx	ctx;
 
@@ -59,7 +71,7 @@ static void	expand_loop(const char *str, char *result, t_env *env_list)
 	ctx.result[ctx.j] = '\0';
 }
 
-char	*expand_variables(const char *str, t_env *env_list)
+char	*expand_variables(char *str, t_env *env_list)
 {
 	char	*result;
 

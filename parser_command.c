@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_command.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:06:35 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:21 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
-bool	is_word_token(t_token_type type);
-bool	handle_cmd_redirect(t_parser *parser, t_cmd_lists *lists);
-bool	handle_word(t_parser *parser, t_cmd_lists *lists);
+bool		is_word_token(t_token_type type);
+bool		handle_cmd_redirect(t_parser *parser, t_cmd_lists *lists);
+bool		handle_word(t_parser *parser, t_cmd_lists *lists);
 
 static bool	parse_cmd_loop(t_parser *parser, t_cmd_lists *lists)
 {
@@ -39,9 +51,9 @@ static void	init_cmd_vars_and_lists(t_cmd_vars *vars, t_cmd_lists *lists)
 
 t_ast	*parse_simple_command(t_parser *parser)
 {
-	t_ast			*cmd_node;
-	t_cmd_vars		vars;
-	t_cmd_lists		lists;
+	t_ast		*cmd_node;
+	t_cmd_vars	vars;
+	t_cmd_lists	lists;
 
 	cmd_node = create_ast_node(NODE_COMMAND, NULL);
 	if (!cmd_node)

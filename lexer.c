@@ -1,13 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:06:22 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:18 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 #include <readline/readline.h>
 
-int	handle_redirect\
-(const char *input, int pos, char **value, t_token_type *type);
+int				handle_redirect(char *input, int pos, char **value,
+					t_token_type *type);
 
-int	handle_concatenated_word\
-(const char *input, int pos, char **value, t_token_type *type);
+int				handle_concatenated_word(char *input, int pos, char **value,
+					t_token_type *type);
 
-int	handle_pipe(const char *input, int pos, char **value, t_token_type *type)
+int	handle_pipe(char *input, int pos, char **value, t_token_type *type)
 {
 	(void)input;
 	*type = PIPE;
@@ -17,8 +29,8 @@ int	handle_pipe(const char *input, int pos, char **value, t_token_type *type)
 	return (pos + 1);
 }
 
-static int	process_token(const char *input, int pos, char **value,
-	t_token_type *type)
+static int	process_token(char *input, int pos, char **value,
+		t_token_type *type)
 {
 	if (input[pos] == '<' || input[pos] == '>')
 		return (handle_redirect(input, pos, value, type));
@@ -29,7 +41,7 @@ static int	process_token(const char *input, int pos, char **value,
 }
 
 static t_token	*create_and_add_token(t_token **head, t_token_type type,
-	char *value)
+		char *value)
 {
 	t_token	*token;
 
@@ -44,7 +56,7 @@ static t_token	*create_and_add_token(t_token **head, t_token_type type,
 	return (token);
 }
 
-static bool	process_input_token(const char *input, int *pos, t_token **head)
+static bool	process_input_token(char *input, int *pos, t_token **head)
 {
 	char			*value;
 	t_token_type	type;
@@ -63,7 +75,7 @@ static bool	process_input_token(const char *input, int *pos, t_token **head)
 	return (true);
 }
 
-t_token	*tokenize(const char *input)
+t_token	*tokenize(char *input)
 {
 	t_token	*head;
 	t_token	*token;

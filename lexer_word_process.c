@@ -1,9 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_word_process.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:06:15 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:17 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
-int	handle_quotes(const char *input, int pos, char **value, t_token_type *type);
+int	handle_quotes(char *input, int pos, char **value, t_token_type *type);
 
-int	process_quoted_part(const char *input, int pos, char **temp,
-	bool *has_expandable)
+int	process_quoted_part(char *input, int pos, char **temp, bool *has_expandable)
 {
 	t_token_type	temp_type;
 	int				new_pos;
@@ -16,7 +27,7 @@ int	process_quoted_part(const char *input, int pos, char **temp,
 	return (new_pos);
 }
 
-int	process_unquoted_part(const char *input, int pos, char **temp)
+int	process_unquoted_part(char *input, int pos, char **temp)
 {
 	int	start_pos;
 
@@ -30,8 +41,7 @@ int	process_unquoted_part(const char *input, int pos, char **temp)
 	return (pos);
 }
 
-int	process_word_part(const char *input, int pos, char **temp,
-	bool *has_expandable)
+int	process_word_part(char *input, int pos, char **temp, bool *has_expandable)
 {
 	int	new_pos;
 

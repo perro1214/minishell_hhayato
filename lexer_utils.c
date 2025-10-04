@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:06:11 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:10:16 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
 bool	is_quote(char c)
@@ -15,14 +27,14 @@ bool	is_special_char(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
-int	skip_whitespace(const char *str, int pos)
+int	skip_whitespace(char *str, int pos)
 {
 	while (str[pos] && is_whitespace(str[pos]))
 		pos++;
 	return (pos);
 }
 
-t_token	*create_token(t_token_type type, const char *value)
+t_token	*create_token(t_token_type type, char *value)
 {
 	t_token	*token;
 
@@ -44,4 +56,3 @@ t_token	*create_token(t_token_type type, const char *value)
 	token->next = NULL;
 	return (token);
 }
-

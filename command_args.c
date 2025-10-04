@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   command_args.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:04:48 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:09:52 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
 static int	count_args(t_ast *node)
@@ -7,15 +19,15 @@ static int	count_args(t_ast *node)
 	count = 0;
 	while (node)
 	{
-		if (node->type == EXPANDABLE || node->type == EXPANDABLE_QUOTED || \
-node->type == NON_EXPANDABLE)
+		if (node->type == EXPANDABLE || node->type == EXPANDABLE_QUOTED
+			|| node->type == NON_EXPANDABLE)
 			count++;
 		node = node->right;
 	}
 	return (count);
 }
 
-static void	free_args_on_error(const char **args, int count)
+static void	free_args_on_error(char **args, int count)
 {
 	while (--count >= 0)
 		free((char *)args[count]);
@@ -24,12 +36,11 @@ static void	free_args_on_error(const char **args, int count)
 
 static int	is_valid_arg_type(t_token_type type)
 {
-	return (type == EXPANDABLE || type == EXPANDABLE_QUOTED || \
-type == NON_EXPANDABLE);
+	return (type == EXPANDABLE || type == EXPANDABLE_QUOTED
+		|| type == NON_EXPANDABLE);
 }
 
-static int	process_arg_node(t_ast *node, const char **args, \
-int *i, t_env *env_list)
+static int	process_arg_node(t_ast *node, char **args, int *i, t_env *env_list)
 {
 	char	*expanded_value;
 
@@ -43,11 +54,11 @@ int *i, t_env *env_list)
 	return (1);
 }
 
-const char	**create_args_array(t_ast *node, t_env *env_list)
+char	**create_args_array(t_ast *node, t_env *env_list)
 {
-	const char	**args;
-	int			count;
-	int			i;
+	char	**args;
+	int		count;
+	int		i;
 
 	count = count_args(node);
 	args = malloc(sizeof(char *) * (count + 1));
@@ -66,4 +77,3 @@ const char	**create_args_array(t_ast *node, t_env *env_list)
 	args[i] = NULL;
 	return (args);
 }
-

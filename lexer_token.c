@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_token.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhayato <hhayato@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:06:06 by hhayato           #+#    #+#             */
+/*   Updated: 2025/10/04 14:14:24 by hhayato          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_parser.h"
 
 void	add_token(t_token **head, t_token *new_token)
@@ -30,7 +42,7 @@ void	free_tokens(t_token *head)
 	}
 }
 
-static void	print_token_value(const char *type_name, const char *value)
+static void	print_token_value(char *type_name, char *value)
 {
 	if (value)
 		printf("Type: %-17s Value: %s\n", type_name, value);
@@ -38,27 +50,18 @@ static void	print_token_value(const char *type_name, const char *value)
 		printf("Type: %-17s Value: %s\n", type_name, "(null)");
 }
 
-static const char	**get_type_names(void)
+static char	**get_type_names(void)
 {
-	static const char	*type_names[] = {
-		"EXPANDABLE",
-		"EXPANDABLE_QUOTED",
-		"NON_EXPANDABLE",
-		"PIPE",
-		"REDIRECT_IN",
-		"REDIRECT_OUT",
-		"REDIRECT_APPEND",
-		"REDIRECT_HEREDOC",
-		"NODE_COMMAND",
-		"EOF_TOKEN"
-	};
+	static char	*type_names[] = {"EXPANDABLE", "EXPANDABLE_QUOTED", \
+"NON_EXPANDABLE", "PIPE", "REDIRECT_IN", "REDIRECT_OUT", \
+"REDIRECT_APPEND", "REDIRECT_HEREDOC", "NODE_COMMAND", "EOF_TOKEN"};
 
 	return (type_names);
 }
 
 void	print_tokens(t_token *head)
 {
-	const char	**type_names;
+	char	**type_names;
 
 	type_names = get_type_names();
 	while (head)
@@ -67,4 +70,3 @@ void	print_tokens(t_token *head)
 		head = head->next;
 	}
 }
-
