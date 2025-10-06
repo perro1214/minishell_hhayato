@@ -18,9 +18,11 @@ void		print_right_subtree(t_ast *node, int level);
 
 static char	**get_type_names(void)
 {
-	static char	*type_names[] = {"EXPANDABLE", "EXPANDABLE_QUOTED", \
-			"NON_EXPANDABLE", "PIPE", "REDIRECT_IN", "REDIRECT_OUT", \
-			"REDIRECT_APPEND", "REDIRECT_HEREDOC", "NODE_COMMAND", "EOF_TOKEN"};
+	static char	*type_names[] = {
+		"EXPANDABLE", "EXPANDABLE_QUOTED", "NON_EXPANDABLE", "PIPE",
+		"REDIRECT_IN", "REDIRECT_OUT", "REDIRECT_APPEND",
+		"REDIRECT_HEREDOC", "NODE_COMMAND", "EOF_TOKEN"
+	};
 
 	return (type_names);
 }
