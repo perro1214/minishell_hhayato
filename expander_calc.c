@@ -58,7 +58,7 @@ int	calculate_expanded_length(char *str, t_env *env_list)
 			i += 2;
 		}
 		else if (str[i] == '$' && str[i + 1] && \
-		(ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
+(ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
 			total_len += calc_env_var_len(str, &i, env_list);
 		else
 		{

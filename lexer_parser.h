@@ -115,26 +115,22 @@ typedef struct s_data
 	char						*input;
 }								t_data;
 
-// Lexer functions
-t_token							*tokenize(char *input);
-t_token	*create_token\
-	(t_token_type type, char *value);
+t_token	*tokenize(char *input);
+t_token	*create_token (t_token_type type, char *value);
 void							add_token(t_token **head, t_token *new_token);
 void							free_tokens(t_token *head);
 void							print_tokens(t_token *head);
 
 // Parser functions
 t_ast							*parse(t_token *tokens);
-t_ast							*create_ast_node(t_token_type type,
-									char *value);
+t_ast							*create_ast_node(t_token_type type,char *value);
 void							free_ast(t_ast *node);
 void							print_ast(t_ast *node, int level);
 t_ast							*parse_pipeline(t_parser *parser);
 t_ast							*parse_simple_command(t_parser *parser);
 t_ast							*parse_redirection(t_parser *parser);
 t_token							*advance_token(t_parser *parser);
-void							append_node(t_ast **list_head,
-									t_ast **list_tail, t_ast *new_node);
+void							append_node(t_ast **list_head,t_ast **list_tail, t_ast *new_node);
 
 // Helper functions
 bool							is_redirect_token(t_token_type type);
@@ -144,40 +140,27 @@ bool							is_special_char(char c);
 int								skip_whitespace(char *str, int pos);
 
 // Command execution functions
-t_command_invocation			*ast_to_command_invocation(t_ast *ast,
-									t_env *env_list);
-t_cmd_redirection	*create_redirection(t_redirect_type type,
-										char *file_path);
-void							add_redirection(t_cmd_redirection **head,
-									t_cmd_redirection *new_redir);
-void							free_redirections(t_cmd_redirection *head);
+t_command_invocation	*ast_to_command_invocation(t_ast *ast,t_env *env_list);
+t_cmd_redirection	*create_redirection(t_redirect_type type, char	*file_path);
+void	add_redirection(t_cmd_redirection **head,t_cmd_redirection *new_redir);
+void	free_redirections(t_cmd_redirection *head);
 void							free_command_invocation(t_command_invocation *cmd);
-void							print_command_invocation(t_command_invocation *cmd,
-									int level);
-char							**create_args_array(t_ast *node,
-									t_env *env_list);
-void							process_redirections(t_ast *node,
-									t_command_invocation *cmd, t_env *env_list);
+void							print_command_invocation(t_command_invocation *cmd, int level);
+char							**create_args_array(t_ast *node, t_env *env_list);
+void							process_redirections(t_ast *node, t_command_invocation *cmd, t_env *env_list);
 
-// 環境変数操作関数
 void							free_env_list(t_env *head);
 t_env							*make_env_node(char *name, char *value);
-void							append_env_node(t_env **head, t_env **tail,
-									t_env *node);
+void							append_env_node(t_env **head, t_env **tail, t_env *node);
 t_env							*find_env_node(t_env *head, char *name);
 int								init_env_list(t_data *data, char *envp[]);
 
-// 変数展開関数
 char							*expand_variables(char *str, t_env *env_list);
-char							*expand_token_value(char *value,
-									t_token_type type, t_env *env_list);
+char							*expand_token_value(char *value, t_token_type type, t_env *env_list);
 int								get_var_name_length(char *str);
-char							*get_env_value(char *var_name, int name_len,
-									t_env *env_list);
-int								calculate_expanded_length(char *str,
-									t_env *env_list);
+char							*get_env_value(char *var_name, int name_len, t_env *env_list);
+int								calculate_expanded_length(char *str, t_env *env_list);
 
-// マルチライン入力処理関数
 char							*handle_multiline_input(char *initial_input);
 
 #endif
